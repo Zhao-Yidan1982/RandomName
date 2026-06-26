@@ -61,7 +61,7 @@ if include_sex:
             female_name.append(i[1])
     all_name = male_name + female_name
     if not all_name:
-        print_wrong("数据库为空!!!")
+        print_wrong("数据库为空")
         input('请按回车键退出运行')
         exit()
     elif not male_name:
@@ -73,7 +73,7 @@ else:
     for i in temp_list:
         all_name.append(i[1])
     if not all_name:
-        print_wrong("数据库为空!!!")
+        print_wrong("数据库为空")
         input('请按回车键退出运行')
         exit()
 
@@ -120,5 +120,5 @@ while True:
     elif mode == "exit":
         exit()
     else:
-        print_error('未识别的模式编号!!')
+        print_error('未识别的模式编号')
         print('请重新选择模式')
