@@ -8,6 +8,13 @@ def print_error(message):
 def print_wrong(message):
     print(f"wrong:{message}!!!\n")
 
+#版本信息
+VERSION_INFO = {
+    "version": "1.0.0",
+    "update_date": "2026-6-26",
+    "update_info": ["首个正式版本"],
+    "other": "work in progress"
+}
 
 #读取数据
 encodings = ['utf-8', 'gbk']
@@ -36,16 +43,16 @@ female_name = []
 all_name = []
 
 #判断是否有性别列是否正常
-have_sex = True
+include_sex = True
 for i in temp_list:
     if len(i) < 3 or \
         "男" in i[2] and "女" in i[2] or\
         "女" not in i[2] and "男" not in i[2]:
         print_error("数据库中性别标识或性别列位置不正确,将无法使用模式2,请检查数据库")
-        have_sex = False
+        include_sex = False
         break
 
-if have_sex:
+if include_sex:
     #对数据分类
     for i in temp_list:
         if "男" in i[2] and "女" not in i[2]:
@@ -78,103 +85,40 @@ for i in temp_list:
 #删除初步分类临时表
 del temp_list
 
+#导入模块化模式函数
+from models.single_name_extract_mode import single_name_extract_mode
+from models.choice_sex_mode import choice_sex_mode
+from models.multi_name_extract_mode import multi_name_extract_mode
+from models.single_number_extract_mode import single_number_extract_mode
+from models.multi_number_extract_mode import multi_number_extract_mode
+
+#定义主逻辑
 while True:
     #选择模式
-    mode = input('1.单人抽取模式\n2.性别选择模式\n3.多人抽取模式\n4.单编号抽取模式\n5.多编号抽取模式\n请输入您选择的模式编号或输入"exit"退出运行:')
+    mode = input('1.单人抽取模式\n2.性别选择模式\n3.多人抽取模式\n4.单编号抽取模式\n5.多编号抽取模式\n6.about\n请输入您选择的模式编号或输入"exit"退出运行:')
     #主逻辑
     if mode == "1":
-        while True:
-            mode_input = input('请按回车键抽取姓名\n或输入"exit"退出运行"quit"重新选择模式')
-            if mode_input == "exit":
-                exit()
-            elif mode_input == "quit":
-                break
-            print()
-            print(random.choice(all_name))
-            print()
+        single_name_extract_mode(all_name)
     elif mode == "2":
-        while True:
-            if not have_sex:
-                print_wrong("无性别数据无法使用此模式")
-                break
-            sex_choice = input('默认为全部,male为仅男性,female为仅女性\n请选择抽取范围或\n输入"exit"退出运行"quit"重新选择模式:')
-            print()
-            if sex_choice == "exit":
-                exit()
-            elif sex_choice == "quit":
-                break
-            elif sex_choice == "male":
-                if male_name:
-                    print(random.choice(male_name))
-                    print()
-                else:
-                    print_error("无男性数据")
-            elif sex_choice == "female":
-                if female_name:
-                    print(random.choice(female_name))
-                    print()
-                else:
-                    print_error("无女性数据")
-            else:
-                print(random.choice(all_name))
-                print()
+        choice_sex_mode(all_name,male_name,female_name,include_sex)
     elif mode == "3":
-        while True:
-            num = input('请选择抽取人数或\n输入"exit"退出运行"quit"重新选择模式:')
-            if num == "exit":
-                exit()
-            elif num == "quit":
-                break
-            try:
-                num = int(num)
-            except ValueError:
-                print_error('请输入整数')
-                continue
-            print()
-            if num <= 0:
-                print_error("请输入正整数")
-            elif num <= len(all_name):
-                random.shuffle(all_name)
-                for i in all_name[:num]:
-                    print(i,end=" ")
-                print("\n")
-            else:
-                print_error(f"人数不足,仅{len(all_name)}人,无法抽取")
-                print('\n')
+        multi_name_extract_mode(all_name)
     elif mode == "4":
-        while True:
-            mode_input = input('请按回车键抽取编号\n或输入"exit"退出运行"quit"重新选择模式')
-            if mode_input == "exit":
-                exit()
-            elif mode_input == "quit":
-                break
-            print()
-            print(random.choice(num_list))
-            print()
+        single_number_extract_mode(num_list)
     elif mode == "5":
-        while True:
-            num = input('请选择抽取编号数量或\n输入"exit"退出运行"quit"重新选择模式:')
-            if num == "exit":
-                exit()
-            elif num == "quit":
-                break
-            try:
-                num = int(num)
-            except ValueError:
-                print_error('请输入整数')
-                continue
-            print()
-            if num <= 0:
-                print_error("请输入正整数")
-            elif num <= len(num_list):
-                random.shuffle(num_list)
-                for i in num_list[:num]:
-                    print(i,end=" ")
-                print("\n")
-            else:
-                print_error(f"编号数量不足,仅{len(num_list)}个,无法抽取")
-                print('\n')
+        multi_number_extract_mode(num_list)
+    elif mode == "6":
+        print()
+        print("版本信息:")
+        print(f"    version:{VERSION_INFO['version']}")
+        print(f"    update_date:{VERSION_INFO['update_date']}")
+        print(f"    update_info:")
+        for update_info in VERSION_INFO['update_info']:
+            print(f"        {update_info}")
+        print(f"    {VERSION_INFO['other']}")
+        input("按回车键继续使用...")
     elif mode == "exit":
         exit()
     else:
-        print_error('未识别的模式编号!!\n请重新选择')
+        print_error('未识别的模式编号!!')
+        print('请重新选择模式')
