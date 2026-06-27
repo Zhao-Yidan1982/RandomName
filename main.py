@@ -29,11 +29,17 @@ for enc in encodings:
         mnls_main = nmls.readlines()
         break  # 读取成功，跳出循环
     except FileNotFoundError:
-        input("wrong:数据库文件不存在!!!\n请按回车键退出程序")
+        print_wrong('数据库文件不存在')
+        input("请按回车键退出程序")
+        exit()
+    except PermissionError:
+        print_wrong('数据库文件权限不足')
+        input("请检查文件权限并按回车键退出程序")
         exit()
     except UnicodeDecodeError:
         if enc == encodings[-1]:  # 已经是最后一种编码
-            input("wrong:不支持此编码的数据库文本!!!\n请使用GBK或UTF-8\n并按回车键退出运行")
+            print_wrong('不支持此编码的数据库文本')
+            input("请使用GBK或UTF-8\n并按回车键退出运行")
             exit()
 nmls.close()
 
@@ -51,8 +57,7 @@ all_name = []
 include_sex = True
 for i in temp_list:
     if len(i) < 3 or \
-        "男" in i[2] and "女" in i[2] or\
-        "女" not in i[2] and "男" not in i[2]:
+    "男" in i[2] == "女" in i[2]:
         print_error("数据库中性别标识或性别列位置不正确,将无法使用模式2,请检查数据库")
         include_sex = False
         break
