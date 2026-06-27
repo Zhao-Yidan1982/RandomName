@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import random
+import configparser
 
 #定义错误提示函数
 def print_error(message):
@@ -26,6 +26,33 @@ VERSION_INFO = {
 filename = input("请输入要读取的数据库文件名(默认为default): ")
 if filename == '':
     filename = "default"
+
+#定义程序设置类
+class ProgramSettings:
+    def __init__(self):
+        self.IncludeNumber = True
+        self.NumberColumn = 0
+        self.IncludeName = True
+        self.NameColumn = 1
+        self.IncludeSex = True
+        self.SexCColumn = 2
+        self.IncludeHeavy = True
+        self.HeavyColumn = 3
+        self.DynamicHeavy = False
+
+#读取配置文件
+settings = ProgramSettings()
+config = configparser.ConfigParser()
+config.read('config/setting.ini')
+settings.IncludeNumber = config.getboolean('DEFAULT', 'IncludeNumber', fallback=settings.IncludeNumber)
+settings.NumberColumn = config.getint('DEFAULT', 'NumberColumn', fallback=settings.NumberColumn)
+settings.IncludeName = config.getboolean('DEFAULT', 'IncludeName', fallback=settings.IncludeName)
+settings.NameColumn = config.getint('DEFAULT', 'NameColumn', fallback=settings.NameColumn)
+settings.IncludeSex = config.getboolean('DEFAULT', 'IncludeSex', fallback=settings.IncludeSex)
+settings.SexCColumn = config.getint('DEFAULT', 'SexColumn', fallback=settings.SexCColumn)
+settings.IncludeHeavy = config.getboolean('DEFAULT', 'IncludeHeavy', fallback=settings.IncludeHeavy)
+settings.HeavyColumn = config.getint('DEFAULT', 'HeavyColumn', fallback=settings.HeavyColumn)
+settings.DynamicHeavy = config.getboolean('DEFAULT', 'DynamicHeavy', fallback=settings.DynamicHeavy)
 
 #读取数据
 encodings = ['utf-8', 'gbk']
