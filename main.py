@@ -10,9 +10,9 @@ def print_wrong(message):
 
 #版本信息
 VERSION_INFO = {
-    "version": "1.0.0",
-    "update_date": "2026-6-26",
-    "update_info": ["首个正式版本"],
+    "version": "1.1.0",
+    "update_date": "2026-6-27",
+    "update_info": ["【改进】优化了报错逻辑", "【改进】重构了部分代码结构", "【改进】修复了部分bug","【功能】添加了多数据库读取功能","【功能】添加了Linux源代码运行脚本"],
     "other": "work in progress"
 }
 
