@@ -10,7 +10,7 @@ def multi_number_extract_mode(num_list:list):
     
     #定义多编号抽取模式函数逻辑
     while True:
-        mode_input = input('请按回车键抽取编号\n或输入"exit"退出运行"quit"重新选择模式')
+        mode_input = input('请按回车键抽取编号\n或输入"exit"退出运行,"quit"重新选择模式')
         if mode_input == "exit":
             exit()
         elif mode_input == "quit":

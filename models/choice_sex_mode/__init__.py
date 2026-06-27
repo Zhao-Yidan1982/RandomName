@@ -13,7 +13,7 @@ def choice_sex_mode(all_name:list, male_name:list, female_name:list,include_sex:
         if not include_sex:
             print_wrong("无性别数据无法使用此模式")
             break
-        sex_choice = input('默认为全部,male为仅男性,female为仅女性\n请选择抽取范围或\n输入"exit"退出运行"quit"重新选择模式:')
+        sex_choice = input('默认为全部,male为仅男性,female为仅女性\n请选择抽取范围或\n输入"exit"退出运行,"quit"重新选择模式:')
         print()
         if sex_choice == "exit":
             exit()
