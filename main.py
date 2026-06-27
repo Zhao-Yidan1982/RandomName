@@ -16,11 +16,16 @@ VERSION_INFO = {
     "other": "work in progress"
 }
 
+#选择档案名
+filename = input("请输入要读取的数据库文件名(默认为default): ")
+if filename == '':
+    filename = "default"
+
 #读取数据
 encodings = ['utf-8', 'gbk']
 for enc in encodings:
     try:
-        nmls = open('usrfiles/nmls', 'r', encoding=enc)
+        nmls = open(f"nmls/{filename}", 'r', encoding=enc)
         mnls_main = nmls.readlines()
         break  # 读取成功，跳出循环
     except FileNotFoundError:
