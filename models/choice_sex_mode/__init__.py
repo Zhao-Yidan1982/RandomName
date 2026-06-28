@@ -1,7 +1,7 @@
 import random
 
 #定义性别选择模式函数
-def choice_sex_mode(all_name:list, male_name:list, female_name:list,include_sex:bool):
+def choice_sex_mode(male_name:list, female_name:list,include_sex:bool):
     #定义错误提示函数
     def print_error(message):
         print(f"error:{message}!!\n")
@@ -32,7 +32,7 @@ def choice_sex_mode(all_name:list, male_name:list, female_name:list,include_sex:
             else:
                 print_error("无女性数据")
         else:
-            print(random.choice(all_name))
+            print(random.choice(male_name + female_name))
             print()
     
     

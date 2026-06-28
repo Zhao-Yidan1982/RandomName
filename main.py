@@ -23,36 +23,39 @@ VERSION_INFO = {
 }
 
 #选择档案名
-filename = input("请输入要读取的数据库文件名(默认为default): ")
+filename = input("请输入要读取的数据库及其设置的名称(默认为default): ")
 if filename == '':
     filename = "default"
 
 #定义程序设置类
 class ProgramSettings:
-    def __init__(self):
-        self.IncludeNumber = True
-        self.NumberColumn = 0
-        self.IncludeName = True
-        self.NameColumn = 1
-        self.IncludeSex = True
-        self.SexCColumn = 2
-        self.IncludeHeavy = True
-        self.HeavyColumn = 3
-        self.DynamicHeavy = False
+    IncludeNumber = True
+    NumberColumn = 0
+    IncludeName = True
+    NameColumn = 1
+    IncludeSex = True
+    SexColumn = 2
+    IncludeWeight = True
+    WeightColumn = 3
+    DynamicWeight = False
+    RowStart = 0
+    RowEnd = 6
 
 #读取配置文件
 settings = ProgramSettings()
 config = configparser.ConfigParser()
-config.read('config/setting.ini')
+config.read(f'config/{filename}.ini')
 settings.IncludeNumber = config.getboolean('DEFAULT', 'IncludeNumber', fallback=settings.IncludeNumber)
 settings.NumberColumn = config.getint('DEFAULT', 'NumberColumn', fallback=settings.NumberColumn)
 settings.IncludeName = config.getboolean('DEFAULT', 'IncludeName', fallback=settings.IncludeName)
 settings.NameColumn = config.getint('DEFAULT', 'NameColumn', fallback=settings.NameColumn)
 settings.IncludeSex = config.getboolean('DEFAULT', 'IncludeSex', fallback=settings.IncludeSex)
-settings.SexCColumn = config.getint('DEFAULT', 'SexColumn', fallback=settings.SexCColumn)
-settings.IncludeHeavy = config.getboolean('DEFAULT', 'IncludeHeavy', fallback=settings.IncludeHeavy)
-settings.HeavyColumn = config.getint('DEFAULT', 'HeavyColumn', fallback=settings.HeavyColumn)
-settings.DynamicHeavy = config.getboolean('DEFAULT', 'DynamicHeavy', fallback=settings.DynamicHeavy)
+settings.SexColumn = config.getint('DEFAULT', 'SexColumn', fallback=settings.SexColumn)
+settings.IncludeWeight = config.getboolean('DEFAULT', 'IncludeWeight', fallback=settings.IncludeWeight)
+settings.WeightColumn = config.getint('DEFAULT', 'WeightColumn', fallback=settings.WeightColumn)
+settings.DynamicWeight = config.getboolean('DEFAULT', 'DynamicWeight', fallback=settings.DynamicWeight)
+settings.RowStart = config.getint('DEFAULT', 'RowStart', fallback=settings.RowStart)
+settings.RowEnd = config.getint('DEFAULT', 'RowEnd', fallback=settings.RowEnd)
 
 #读取数据
 encodings = ['utf-8', 'gbk']
@@ -84,26 +87,23 @@ for i in mnls_main:
 #定义三个乘员组
 male_name = []
 female_name = []
-all_name = []
 
-#判断是否有性别列是否正常
-include_sex = True
-for i in temp_list:
-    if len(i) < 3 or \
-    "男" in i[2] == "女" in i[2]:
-        print_error("数据库中性别标识或性别列位置不正确,将无法使用模式2,请检查数据库")
-        include_sex = False
-        break
+#判断是否有性别列是否正确，并将数据分类
 
-if include_sex:
+if settings.IncludeSex:
     #对数据分类
-    for i in temp_list:
-        if "男" in i[2] and "女" not in i[2]:
-            male_name.append(i[1])
-        elif "女" in i[2] and "男" not in i[2]:
-            female_name.append(i[1])
-    all_name = male_name + female_name
-    if not all_name:
+    for i in temp_list[settings.RowStart:settings.RowEnd]:
+        if len(i) < settings.SexColumn + 1 or \
+        "男" in i[settings.SexColumn] == "女" in i[settings.SexColumn]:
+            print_wrong("数据库性别设置不正确")
+            input("请检查数据库性别列并按回车键退出运行")
+            exit()
+    for i in temp_list[settings.RowStart:settings.RowEnd]:
+        if "男" in i[settings.SexColumn] and "女" not in i[settings.SexColumn]:
+            male_name.append(i[settings.NameColumn])
+        elif "女" in i[settings.SexColumn] and "男" not in i[settings.SexColumn]:
+            female_name.append(i[settings.NameColumn])
+    if not male_name + female_name:
         print_wrong("数据库为空")
         input('请按回车键退出运行')
         exit()
@@ -111,19 +111,12 @@ if include_sex:
         print_error("无男性数据")
     elif not female_name:
         print_error("无女性数据")
-else:
-    del male_name,female_name
-    for i in temp_list:
-        all_name.append(i[1])
-    if not all_name:
-        print_wrong("数据库为空")
-        input('请按回车键退出运行')
-        exit()
+
 
 #提取编号
 num_list = []
 for i in temp_list:
-    num_list.append(i[0])
+    num_list.append(i[settings.NumberColumn])
 
 #删除初步分类临时表
 del temp_list
@@ -144,11 +137,11 @@ while True:
     mode = input("请输入您选择的模式编号或输入\"exit\"退出运行:")
     #主逻辑
     if mode == "1":
-        single_name_extract_mode(all_name)
+        single_name_extract_mode(male_name + female_name)
     elif mode == "2":
-        choice_sex_mode(all_name,male_name,female_name,include_sex)
+        choice_sex_mode(male_name,female_name,settings.IncludeSex)
     elif mode == "3":
-        multi_name_extract_mode(all_name)
+        multi_name_extract_mode(male_name + female_name)
     elif mode == "4":
         single_number_extract_mode(num_list)
     elif mode == "5":
