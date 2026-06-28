@@ -134,11 +134,14 @@ from models.choice_sex_mode import choice_sex_mode
 from models.multi_name_extract_mode import multi_name_extract_mode
 from models.single_number_extract_mode import single_number_extract_mode
 from models.multi_number_extract_mode import multi_number_extract_mode
+modelist = ['单人抽取模式','性别选择模式','多人抽取模式','单编号抽取模式','多编号抽取模式','about']
 
 #定义主逻辑
 while True:
+    for i in range(len(modelist)):
+        print(f"{i+1}.{modelist[i]}")
     #选择模式
-    mode = input('1.单人抽取模式\n2.性别选择模式\n3.多人抽取模式\n4.单编号抽取模式\n5.多编号抽取模式\n6.about\n请输入您选择的模式编号或输入"exit"退出运行:')
+    mode = input("请输入您选择的模式编号或输入\"exit\"退出运行:")
     #主逻辑
     if mode == "1":
         single_name_extract_mode(all_name)
