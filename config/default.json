@@ -1,0 +1,13 @@
+{
+  "IncludeNumber": true,
+  "NumberColumn": 0,
+  "IncludeName": true,
+  "NameColumn": 1,
+  "IncludeSex": true,
+  "SexColumn": 2,
+  "IncludeWeight": true,
+  "WeightColumn": 3,
+  "DynamicWeight": true,
+  "RowStart": 0,
+  "RowEnd": 6
+}

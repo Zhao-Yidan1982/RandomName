@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import configparser
+import json
 
 #定义错误提示函数
 def print_error(message):
@@ -27,49 +27,40 @@ filename = input("请输入要读取的数据库及其设置的名称(默认为d
 if filename == '':
     filename = "default"
 
-#定义程序设置类
-class ProgramSettings:
-    IncludeNumber = True
-    NumberColumn = 0
-    IncludeName = True
-    NameColumn = 1
-    IncludeSex = True
-    SexColumn = 2
-    IncludeWeight = True
-    WeightColumn = 3
-    DynamicWeight = False
-    RowStart = 0
-    RowEnd = 6
+#支持编码
+encodings = ['utf-8', 'gbk']
 
 #读取配置文件
-settings = ProgramSettings()
-config = configparser.ConfigParser()
-config.read(f'config/{filename}.ini')
-settings.IncludeNumber = config.getboolean('DEFAULT', 'IncludeNumber', fallback=settings.IncludeNumber)
-settings.NumberColumn = config.getint('DEFAULT', 'NumberColumn', fallback=settings.NumberColumn)
-settings.IncludeName = config.getboolean('DEFAULT', 'IncludeName', fallback=settings.IncludeName)
-settings.NameColumn = config.getint('DEFAULT', 'NameColumn', fallback=settings.NameColumn)
-settings.IncludeSex = config.getboolean('DEFAULT', 'IncludeSex', fallback=settings.IncludeSex)
-settings.SexColumn = config.getint('DEFAULT', 'SexColumn', fallback=settings.SexColumn)
-settings.IncludeWeight = config.getboolean('DEFAULT', 'IncludeWeight', fallback=settings.IncludeWeight)
-settings.WeightColumn = config.getint('DEFAULT', 'WeightColumn', fallback=settings.WeightColumn)
-settings.DynamicWeight = config.getboolean('DEFAULT', 'DynamicWeight', fallback=settings.DynamicWeight)
-settings.RowStart = config.getint('DEFAULT', 'RowStart', fallback=settings.RowStart)
-settings.RowEnd = config.getint('DEFAULT', 'RowEnd', fallback=settings.RowEnd)
-
-#读取数据
-encodings = ['utf-8', 'gbk']
 for enc in encodings:
     try:
-        nmls = open(f"nmls/{filename}", 'r', encoding=enc)
-        mnls_main = nmls.readlines()
+        with open(f"./config/{filename}.json", "r", encoding="utf-8") as f:
+            settings = json.load(f)
+    except FileNotFoundError:
+        print_wrong('配置文件不存在')
+        input("请按回车键退出程序")
+        exit()
+    except PermissionError:
+        print_wrong('无读取配置文件权限不足')
+        input("请检查文件权限并按回车键退出程序")
+        exit()
+    except UnicodeDecodeError:
+        if enc == encodings[-1]:  # 已经是最后一种编码
+            print_wrong('不支持此编码的配置文件')
+            input("请使用GBK或UTF-8\n并按回车键退出运行")
+            exit()
+
+#读取数据
+for enc in encodings:
+    try:
+        with open(f"nmls/{filename}", 'r', encoding=enc) as nmls:
+            mnls_main = nmls.readlines()
         break  # 读取成功，跳出循环
     except FileNotFoundError:
         print_wrong('数据库文件不存在')
         input("请按回车键退出程序")
         exit()
     except PermissionError:
-        print_wrong('数据库文件权限不足')
+        print_wrong('无读取数据库文件权限不足')
         input("请检查文件权限并按回车键退出程序")
         exit()
     except UnicodeDecodeError:
@@ -77,14 +68,13 @@ for enc in encodings:
             print_wrong('不支持此编码的数据库文本')
             input("请使用GBK或UTF-8\n并按回车键退出运行")
             exit()
-nmls.close()
 
 #将数据初步分割
 temp_list = []
 for i in mnls_main:
     temp_list.append(i.split(','))
 
-#定义三个乘员组
+#定义乘员组
 male_name = []
 female_name = []
 
@@ -92,17 +82,17 @@ female_name = []
 
 if settings.IncludeSex:
     #对数据分类
-    for i in temp_list[settings.RowStart:settings.RowEnd]:
-        if len(i) < settings.SexColumn + 1 or \
-        "男" in i[settings.SexColumn] == "女" in i[settings.SexColumn]:
+    for i in temp_list[settings['RowStart']:settings['RowEnd']]:
+        if len(i) < settings['SexColumn'] + 1 or \
+        "男" in i[settings['SexColumn']] == "女" in i[settings['SexColumn']]:
             print_wrong("数据库性别设置不正确")
             input("请检查数据库性别列并按回车键退出运行")
             exit()
-    for i in temp_list[settings.RowStart:settings.RowEnd]:
-        if "男" in i[settings.SexColumn] and "女" not in i[settings.SexColumn]:
-            male_name.append(i[settings.NameColumn])
-        elif "女" in i[settings.SexColumn] and "男" not in i[settings.SexColumn]:
-            female_name.append(i[settings.NameColumn])
+    for i in temp_list[settings['RowStart']:settings['RowEnd']]:
+        if "男" in i[settings['SexColumn']] and "女" not in i[settings['SexColumn']]:
+            male_name.append(i[settings['NameColumn']])
+        elif "女" in i[settings['SexColumn']] and "男" not in i[settings['SexColumn']]:
+            female_name.append(i[settings['NameColumn']])
     if not male_name + female_name:
         print_wrong("数据库为空")
         input('请按回车键退出运行')
@@ -116,7 +106,7 @@ if settings.IncludeSex:
 #提取编号
 num_list = []
 for i in temp_list:
-    num_list.append(i[settings.NumberColumn])
+    num_list.append(i[settings['NumberColumn']])
 
 #删除初步分类临时表
 del temp_list
