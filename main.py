@@ -8,8 +8,16 @@ def print_error(message):
 def print_wrong(message):
     print(f"wrong:{message}!!!\n")
 
+#定义判断是否为整数的函数
+def is_integer(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 #版本信息
-VERSION_INFO = {
+"""VERSION_INFO = {
     "version": "1.1.0",
     "update_date": "2026-6-27",
     "update_info": [
@@ -20,7 +28,7 @@ VERSION_INFO = {
         "【功能】添加了Linux源代码运行脚本"
         ],
     "other": "work in progress"
-}
+}"""
 
 #选择档案名
 filename = input("请输入要读取的数据库及其设置的名称(默认为default): ")
@@ -33,7 +41,7 @@ encodings = ['utf-8', 'gbk']
 #读取配置文件
 for enc in encodings:
     try:
-        with open(f"./config/{filename}.json", "r", encoding="utf-8") as f:
+        with open(f"config/{filename}.json", "r", encoding="utf-8") as f:
             settings = json.load(f)
     except FileNotFoundError:
         print_wrong('配置文件不存在')
@@ -80,7 +88,7 @@ female_name = []
 
 #判断是否有性别列是否正确，并将数据分类
 
-if settings.IncludeSex:
+if settings['IncludeSex']:
     #对数据分类
     for i in temp_list[settings['RowStart']:settings['RowEnd']]:
         if len(i) < settings['SexColumn'] + 1 or \
@@ -102,6 +110,13 @@ if settings.IncludeSex:
     elif not female_name:
         print_error("无女性数据")
 
+#判断是否有权重列是否正确
+if settings['IncludeWeight']:
+    for i in temp_list[settings['RowStart']:settings['RowEnd']]:
+        if len(i) < settings['WeightColumn'] + 1 and is_integer(i[settings['WeightColumn']]):
+            print_wrong("数据库权重列设置不正确")
+            input("请检查数据库权重列并按回车键退出运行")
+            exit()
 
 #提取编号
 num_list = []
@@ -129,7 +144,7 @@ while True:
     if mode == "1":
         single_name_extract_mode(male_name + female_name)
     elif mode == "2":
-        choice_sex_mode(male_name,female_name,settings.IncludeSex)
+        choice_sex_mode(male_name,female_name,settings['IncludeSex'])
     elif mode == "3":
         multi_name_extract_mode(male_name + female_name)
     elif mode == "4":
