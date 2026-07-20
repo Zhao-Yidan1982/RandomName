@@ -1,12 +1,8 @@
 #!/usr/bin/python3
 import json
 
-#定义错误提示函数
-def print_error(message):
-    print(f"error:{message}!!\n")
-
-def print_wrong(message):
-    print(f"wrong:{message}!!!\n")
+#导入模块化模式函数
+from models import *
 
 #定义判断是否为整数的函数
 def is_integer(s):
@@ -17,7 +13,7 @@ def is_integer(s):
         return False
 
 #版本信息
-"""VERSION_INFO = {
+VERSION_INFO = {
     "version": "1.1.0",
     "update_date": "2026-6-27",
     "update_info": [
@@ -28,9 +24,9 @@ def is_integer(s):
         "【功能】添加了Linux源代码运行脚本"
         ],
     "other": "work in progress"
-}"""
+}
 
-#选择档案名
+#选择档案
 filename = input("请输入要读取的数据库及其设置的名称(默认为default): ")
 if filename == '':
     filename = "default"
@@ -85,9 +81,12 @@ for i in mnls_main:
 #定义乘员组
 male_name = []
 female_name = []
+male_number = []
+female_number = []
 
 #判断是否有性别列是否正确，并将数据分类
 
+only_one_sex = False
 if settings['IncludeSex']:
     #对数据分类
     for i in temp_list[settings['RowStart']:settings['RowEnd']]:
@@ -99,39 +98,44 @@ if settings['IncludeSex']:
     for i in temp_list[settings['RowStart']:settings['RowEnd']]:
         if "男" in i[settings['SexColumn']] and "女" not in i[settings['SexColumn']]:
             male_name.append(i[settings['NameColumn']])
+            male_number.append(i[settings['NumberColumn']])
         elif "女" in i[settings['SexColumn']] and "男" not in i[settings['SexColumn']]:
             female_name.append(i[settings['NameColumn']])
+            female_number.append(i[settings['NumberColumn']])
     if not male_name + female_name:
         print_wrong("数据库为空")
         input('请按回车键退出运行')
         exit()
     elif not male_name:
         print_error("无男性数据")
+        only_one_sex = True
     elif not female_name:
         print_error("无女性数据")
-
-#判断是否有权重列是否正确
-if settings['IncludeWeight']:
-    for i in temp_list[settings['RowStart']:settings['RowEnd']]:
-        if len(i) < settings['WeightColumn'] + 1 and is_integer(i[settings['WeightColumn']]):
-            print_wrong("数据库权重列设置不正确")
-            input("请检查数据库权重列并按回车键退出运行")
-            exit()
+        only_one_sex = True
 
 #提取编号
 num_list = []
 for i in temp_list:
     num_list.append(i[settings['NumberColumn']])
 
+#判断是否有权重列是否正确
+if settings['IncludeWeight']:
+    for i in temp_list[settings['RowStart']:settings['RowEnd']]:
+        if len(i) <= settings['WeightColumn'] and is_integer(i[settings['WeightColumn']]):
+            print_wrong("数据库权重列设置不正确")
+            input("请检查数据库权重列并按回车键退出运行")
+            exit()
+
+#提取权重
+weight_list = []
+if settings['IncludeWeight']:
+    for i in temp_list[settings['RowStart']:settings['RowEnd']]:
+        weight_list.append(i[settings["WeightColumn"]])
+
 #删除初步分类临时表
 del temp_list
 
-#导入模块化模式函数
-from models.single_name_extract_mode import single_name_extract_mode
-from models.choice_sex_mode import choice_sex_mode
-from models.multi_name_extract_mode import multi_name_extract_mode
-from models.single_number_extract_mode import single_number_extract_mode
-from models.multi_number_extract_mode import multi_number_extract_mode
+#模式列表
 modelist = ['单人抽取模式','性别选择模式','多人抽取模式','单编号抽取模式','多编号抽取模式','about']
 
 #定义主逻辑
@@ -142,15 +146,18 @@ while True:
     mode = input("请输入您选择的模式编号或输入\"exit\"退出运行:")
     #主逻辑
     if mode == "1":
-        single_name_extract_mode(male_name + female_name)
+        single_name_pick(male_name + female_name)
     elif mode == "2":
-        choice_sex_mode(male_name,female_name,settings['IncludeSex'])
+        if only_one_sex:
+            print_wrong("仅单性别数据无法使用此模式")
+        else:
+            single_gender_select_name_pick(male_name,female_name)
     elif mode == "3":
-        multi_name_extract_mode(male_name + female_name)
+        multiple_name_pick(male_name + female_name)
     elif mode == "4":
-        single_number_extract_mode(num_list)
+        single_number_pick(num_list)
     elif mode == "5":
-        multi_number_extract_mode(num_list)
+        multiple_number_pick(num_list)
     elif mode == "6":
         print()
         print("版本信息:")
