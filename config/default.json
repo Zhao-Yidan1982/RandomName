@@ -1,11 +1,11 @@
 {
   "IncludeNumber": true,
   "NumberColumn": 0,
-  "IncludeName": true,
+  "IncludeName": false,
   "NameColumn": 1,
   "IncludeSex": true,
   "SexColumn": 2,
-  "IncludeWeight": true,
+  "IncludeWeight": false,
   "WeightColumn": 3,
   "DynamicWeight": true,
   "RowStart": 0,

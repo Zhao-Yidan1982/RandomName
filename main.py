@@ -78,19 +78,18 @@ tmp_list = []
 for i in mnls_main:
     tmp_list.append(i.split(','))
 
-#定义乘员组
-male_name = []
-female_name = []
-male_number = []
-female_number = []
-
 #判断是否有性别列是否正确，并将数据分类
 
 only_one_sex = False
 if settings['IncludeSex']:
+    #定义乘员组
+    male_name = []
+    female_name = []
+    male_number = []
+    female_number = []
     #对数据分类
     for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
-        if len(i) < settings['SexColumn'] + 1 or \
+        if len(i) <= settings['SexColumn'] or \
         "男" in i[settings['SexColumn']] == "女" in i[settings['SexColumn']]:
             print_wrong("数据库性别设置不正确")
             input("请检查数据库性别列并按回车键退出运行")
@@ -112,11 +111,13 @@ if settings['IncludeSex']:
     elif not female_name:
         print_error("无女性数据")
         only_one_sex = True
-
-#提取编号
-num_list = []
-for i in tmp_list:
-    num_list.append(i[settings['NumberColumn']])
+else:
+    num_list = []
+    name_list = []
+    for i in tmp_list:
+        num_list.append(i[settings['NumberColumn']])
+    for i in tmp_list:
+        name_list.append(i[settings['NameColumn']])
 
 #判断是否有权重列是否正确
 if settings['IncludeWeight']:
@@ -151,13 +152,25 @@ while True:
     mode = input("请输入您选择的模式编号或输入\"exit\"退出运行:")
     #主逻辑
     if mode == "1":
-        single_name_pick(male_name + female_name)
+        if settings['IncludeSex']:
+            single_name_pick(male_name + female_name)
+        else:
+            single_name_pick(name_list)
     elif mode == "2":
-        multiple_name_pick(male_name + female_name)
+        if settings['IncludeSex']:
+            multiple_name_pick(male_name + female_name)
+        else:
+            multiple_name_pick(name_list)
     elif mode == "3":
-        single_number_pick(num_list)
+        if settings['IncludeSex']:
+            single_number_pick(male_number + female_number)
+        else:
+            single_number_pick(num_list)
     elif mode == "4":
-        multiple_number_pick(num_list)
+        if settings['IncludeSex']:
+            multiple_number_pick(male_number + female_number)
+        else:
+            multiple_number_pick(num_list)
     elif mode == "5":
         if only_one_sex:
             print_wrong("仅单性别数据无法使用此模式")
