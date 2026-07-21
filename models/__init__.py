@@ -19,7 +19,7 @@ def single_name_pick(all_name:list):
         print()
 
 #定义2.多人姓名抽取函数
-def multiple_name_pick(all_name:list):
+def multiple_name_pick(name_list:list):
     while True:
         mode_input = input('请按回车键抽取姓名\n或输入"exit"退出运行,"quit"重新选择模式')
         if mode_input == "exit":
@@ -27,8 +27,24 @@ def multiple_name_pick(all_name:list):
         elif mode_input == "quit":
             break
         print()
-        print(random.choice(all_name))
+        print(random.choice(name_list))
         print()
+        try:
+            num = int(mode_input)
+        except ValueError:
+            print_error('请输入整数')
+            continue
+        print()
+        if num <= 0:
+            print_error("请输入正整数")
+        elif num <= len(name_list):
+            random.shuffle(name_list)
+            for i in name_list[:num]:
+                print(i,end=" ")
+            print("\n")
+        else:
+            print_error(f"姓名数量不足,仅{len(name_list)}个,无法抽取")
+            print('\n')
 
 #定义3.单人编号抽取函数
 def single_number_pick(num_list:list):
@@ -42,7 +58,7 @@ def single_number_pick(num_list:list):
         print(random.choice(num_list))
         print()
 
-#定义4.多编号抽取模式函数
+#定义4.多编号抽取函数
 def multiple_number_pick(num_list:list):
     while True:
         mode_input = input('请按回车键抽取编号\n或输入"exit"退出运行,"quit"重新选择模式')
