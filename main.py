@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import json
 
 #导入模块化模式函数
@@ -11,6 +12,15 @@ def is_integer(s):
         return True
     except ValueError:
         return False
+
+#定义身份信息class
+class PeopleInfo:
+    def __init__(self):
+        self.number = None
+        self.name = None
+        self.sex = None
+        self.weight = None
+
 
 #版本信息
 VERSION_INFO = {
@@ -79,12 +89,42 @@ for i in mnls_main:
     tmp_list.append(i.split(','))
 
 #判断是否有性别列是否正确，并将数据分类
-
 only_one_sex = False
 if settings['IncludeSex']:
-    #定义乘员组
+    #定义含性别的姓名乘员组
     male_name = []
     female_name = []
+    #对数据分类
+    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
+        if len(i) <= settings['SexColumn'] or \
+        "男" in i[settings['SexColumn']] == "女" in i[settings['SexColumn']]:
+            print_error("数据库性别设置不正确")
+            input("请检查数据库性别列并按回车键退出运行")
+            exit()
+    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
+        if "男" in i[settings['SexColumn']]:
+            male_name.append(i[settings['NameColumn']])
+        elif "女" in i[settings['SexColumn']]:
+            female_name.append(i[settings['NameColumn']])
+    if not male_name + female_name:
+        print_error("数据库为空")
+        input('请按回车键退出运行')
+        exit()
+    elif not male_name:
+        print_warning("无男性数据")
+        only_one_sex = True
+    elif not female_name:
+        print_warning("无女性数据")
+        only_one_sex = True
+else:
+    #定义不含性别的姓名乘员组
+    name_list = []
+    for i in tmp_list:
+        name_list.append(i[settings['NameColumn']])
+
+#判断是否有性别列是否正确，并将数据分类
+if settings['IncludeSex']:
+    #定义含性别的编号乘员组
     male_number = []
     female_number = []
     #对数据分类
