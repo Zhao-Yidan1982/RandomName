@@ -88,7 +88,9 @@ tmp_list = []
 for i in mnls_main:
     tmp_list.append(i.split(','))
 
-#判断是否有性别列是否正确，并将数据分类
+#分离数据
+
+#性别分类
 only_one_sex = False
 if settings['IncludeSex']:
     #定义含性别的姓名乘员组
@@ -122,44 +124,7 @@ else:
     for i in tmp_list:
         name_list.append(i[settings['NameColumn']])
 
-#判断是否有性别列是否正确，并将数据分类
-if settings['IncludeSex']:
-    #定义含性别的编号乘员组
-    male_number = []
-    female_number = []
-    #对数据分类
-    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
-        if len(i) <= settings['SexColumn'] or \
-        "男" in i[settings['SexColumn']] == "女" in i[settings['SexColumn']]:
-            print_error("数据库性别设置不正确")
-            input("请检查数据库性别列并按回车键退出运行")
-            exit()
-    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
-        if "男" in i[settings['SexColumn']] and "女" not in i[settings['SexColumn']]:
-            male_name.append(i[settings['NameColumn']])
-            male_number.append(i[settings['NumberColumn']])
-        elif "女" in i[settings['SexColumn']] and "男" not in i[settings['SexColumn']]:
-            female_name.append(i[settings['NameColumn']])
-            female_number.append(i[settings['NumberColumn']])
-    if not male_name + female_name:
-        print_error("数据库为空")
-        input('请按回车键退出运行')
-        exit()
-    elif not male_name:
-        print_warning("无男性数据")
-        only_one_sex = True
-    elif not female_name:
-        print_warning("无女性数据")
-        only_one_sex = True
-else:
-    num_list = []
-    name_list = []
-    for i in tmp_list:
-        num_list.append(i[settings['NumberColumn']])
-    for i in tmp_list:
-        name_list.append(i[settings['NameColumn']])
-
-#判断是否有权重列是否正确
+#权重分类
 if settings['IncludeWeight']:
     for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
         if len(i) <= settings['WeightColumn'] and is_integer(i[settings['WeightColumn']]):
