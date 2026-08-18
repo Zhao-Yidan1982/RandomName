@@ -5,23 +5,6 @@ import json
 #导入模块化模式函数
 from models import *
 
-#定义判断是否为整数的函数
-def is_integer(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
-
-#定义身份信息class
-class PeopleInfo:
-    def __init__(self):
-        self.number = None
-        self.name = None
-        self.sex = None
-        self.weight = None
-
-
 #版本信息
 VERSION_INFO = {
     "version": "1.1.0",
@@ -35,6 +18,17 @@ VERSION_INFO = {
         ],
     "other": "work in progress"
 }
+
+def about():
+    print()
+    print("版本信息:")
+    print(f"    version:{VERSION_INFO['version']}")
+    print(f"    update_date:{VERSION_INFO['update_date']}")
+    print(f"    update_info:")
+    for update_info in VERSION_INFO['update_info']:
+        print(f"        {update_info}")
+    print(f"    {VERSION_INFO['other']}")
+    input("按回车键继续使用...")
 
 #选择档案
 filename = input("请输入要读取的数据库及其设置的名称(默认为default): ")
@@ -89,65 +83,21 @@ for i in mnls_main:
     tmp_list.append(i.split(','))
 
 #分离数据
-
-#性别分类
-only_one_sex = False
-if settings['IncludeSex']:
-    #定义含性别的姓名乘员组
-    male_name = []
-    female_name = []
-    #对数据分类
-    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
-        if len(i) <= settings['SexColumn'] or \
-        "男" in i[settings['SexColumn']] == "女" in i[settings['SexColumn']]:
-            print_error("数据库性别设置不正确")
-            input("请检查数据库性别列并按回车键退出运行")
-            exit()
-    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
-        if "男" in i[settings['SexColumn']]:
-            male_name.append(i[settings['NameColumn']])
-        elif "女" in i[settings['SexColumn']]:
-            female_name.append(i[settings['NameColumn']])
-    if not male_name + female_name:
-        print_error("数据库为空")
-        input('请按回车键退出运行')
-        exit()
-    elif not male_name:
-        print_warning("无男性数据")
-        only_one_sex = True
-    elif not female_name:
-        print_warning("无女性数据")
-        only_one_sex = True
-else:
-    #定义不含性别的姓名乘员组
-    name_list = []
-    for i in tmp_list:
-        name_list.append(i[settings['NameColumn']])
-
-#权重分类
-if settings['IncludeWeight']:
-    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
-        if len(i) <= settings['WeightColumn'] and is_integer(i[settings['WeightColumn']]):
-            print_error("数据库权重列设置不正确")
-            input("请检查数据库权重列并按回车键退出运行")
-            exit()
-
-#提取权重
-weight_list = []
-if settings['IncludeWeight']:
-    for i in tmp_list[settings['RowStart']:settings['RowEnd']]:
-        weight_list.append(i[settings["WeightColumn"]])
-
-#删除初步分类临时表
-del tmp_list
+people_data:list = []
+for people in tmp_list[settings["RowStart"]:settings["RowEnd"]]:
+    number:(int|None) = people[settings["NumberColumn"]] if settings["IncludeNumber"] else None
+    name:(str|None) = people[settings["NameColumn"]] if settings["IncludeName"] else None
+    sex:(bool|None) = people[settings["SexColumn"]] if settings["IncludeSex"] else None
+    weight:int = people[settings["WeightColumn"]] if settings["IncludeWeight"] else None
+    people_data.append(PeopleInfo(number, name, sex, weight))
 
 #模式列表
 modelist = ['单人姓名抽取',
             '多人姓名抽取',
             '单人编号抽取',
             '多编号抽取模式',
-            '单人性别选择姓名抽取',
-            'about']
+            '单人性别选择姓名抽取'
+    ]
 
 #定义主逻辑
 while True:
@@ -156,43 +106,13 @@ while True:
     #选择模式
     mode = input("请输入您选择的模式编号或输入\"exit\"退出运行:")
     #主逻辑
-    if mode == "1":
-        if settings['IncludeSex']:
-            single_name_pick(male_name + female_name)
-        else:
-            single_name_pick(name_list)
-    elif mode == "2":
-        if settings['IncludeSex']:
-            multiple_name_pick(male_name + female_name)
-        else:
-            multiple_name_pick(name_list)
-    elif mode == "3":
-        if settings['IncludeSex']:
-            single_number_pick(male_number + female_number)
-        else:
-            single_number_pick(num_list)
-    elif mode == "4":
-        if settings['IncludeSex']:
-            multiple_number_pick(male_number + female_number)
-        else:
-            multiple_number_pick(num_list)
-    elif mode == "5":
-        if only_one_sex:
-            print_error("仅单性别数据无法使用此模式")
-        else:
-            single_gender_select_name_pick(male_name,female_name)
-    elif mode == "6":
-        print()
-        print("版本信息:")
-        print(f"    version:{VERSION_INFO['version']}")
-        print(f"    update_date:{VERSION_INFO['update_date']}")
-        print(f"    update_info:")
-        for update_info in VERSION_INFO['update_info']:
-            print(f"        {update_info}")
-        print(f"    {VERSION_INFO['other']}")
-        input("按回车键继续使用...")
-    elif mode == "exit":
-        exit()
-    else:
-        print_warning('未识别的模式编号')
-        print('请重新选择模式')
+    match mode:
+        case "1":
+            pass
+        case "about":
+            about()
+        case "exit":
+            exit()
+        case _:
+            print_warning('未识别的模式编号')
+            print('请重新选择模式')

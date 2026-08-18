@@ -6,6 +6,27 @@ def print_warning(message):
 def print_error(message):
     print(f"Error:{message}!!!\n")
 
+#定义判断是否为整数的函数
+def is_integer(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+#定义身份信息class
+class PeopleInfo:
+    def __init__(self, \
+                _number:(int|None) = None,\
+                _name:(str|None) = None, \
+                _sex:(bool|None) = None, \
+                _weight:(int|None) = None):
+        
+        self.number = _number
+        self.name = _name
+        self.sex = _sex
+        self.weight = _weight
+
 #定义1.单人姓名抽取函数
 def single_name_pick(all_name:list):
     while True:
@@ -89,19 +110,19 @@ def multiple_number_pick(num_list:list):
 #定义5.单人性别选择姓名抽取函数
 def single_gender_select_name_pick(male_name:list, female_name:list):
     while True:
-        sex_choice = input('默认为全部,male为仅男性,female为仅女性\n请选择抽取范围或\n输入"exit"退出运行,"quit"重新选择模式:')
+        sex_choice = input('默认为全部,a为仅男性,b为仅女性\n请选择抽取范围或\n输入"exit"退出运行,"quit"重新选择模式:')
         print()
         if sex_choice == "exit":
             exit()
         elif sex_choice == "quit":
             break
-        elif sex_choice == "male":
+        elif sex_choice == "a":
             if male_name:
                 print(random.choice(male_name))
                 print()
             else:
                 print_warning("无男性数据")
-        elif sex_choice == "female":
+        elif sex_choice == "b":
             if female_name:
                 print(random.choice(female_name))
                 print()
