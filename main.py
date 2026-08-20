@@ -77,6 +77,14 @@ for enc in encodings:
             input("请使用GBK或UTF-8\n并按回车键退出运行")
             exit()
 
+#删除空行
+while "\n" in mnls_main:
+    mnls_main.remove("\n")
+
+#删除行末换行符
+for i in range(len(mnls_main)):
+    mnls_main[i] = mnls_main[i][:-1]
+
 #将数据初步分割
 tmp_list = []
 for i in mnls_main:
@@ -104,7 +112,7 @@ while True:
     for i in range(len(modelist)):
         print(f"{i+1}.{modelist[i]}模式")
     #选择模式
-    mode = input("请输入您选择的模式编号或输入\"exit\"退出运行:")
+    mode = input("请输入您选择的模式编号或输入\"about\"或输入\"exit\"退出运行:")
     #主逻辑
     match mode:
         case "1":
