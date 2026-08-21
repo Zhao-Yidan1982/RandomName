@@ -77,9 +77,6 @@ for enc in encodings:
             input("请使用GBK或UTF-8\n并按回车键退出运行")
             exit()
 
-#删除空行
-while "\n" in mnls_main:
-    mnls_main.remove("\n")
 
 #删除行末换行符
 for i in range(len(mnls_main)):
@@ -92,35 +89,76 @@ for i in mnls_main:
 
 #分离数据
 people_data:list = []
-for people in tmp_list[settings["RowStart"]:settings["RowEnd"]]:
-    number:(int|None) = people[settings["NumberColumn"]] if settings["IncludeNumber"] else None
-    name:(str|None) = people[settings["NameColumn"]] if settings["IncludeName"] else None
-    sex:(bool|None) = people[settings["SexColumn"]] if settings["IncludeSex"] else None
-    weight:int = people[settings["WeightColumn"]] if settings["IncludeWeight"] else None
-    people_data.append(PeopleInfo(number, name, sex, weight))
+try:
+    for people in tmp_list[settings["RowStart"]:settings["RowEnd"]]:
+        number:int|None = int(people[settings["NumberColumn"]]) if settings["IncludeNumber"] else None
+        name:str|None = str(people[settings["NameColumn"]]) if settings["IncludeName"] else None
+        sex:bool|None = None
+        if settings["IncludeSex"]:
+            if "男" in people[settings["NameColumn"]] == "女" in people[settings["NameColumn"]]:
+                print_error("性别数据不合法")
+            if "男" in people[settings["NameColumn"]]:
+                sex = True
+            else:
+                sex = False
+        weight:int|None = int(people[settings["WeightColumn"]]) if settings["IncludeWeight"] else None
+
+        people_data.append(PeopleInfo(number, name, sex, weight))
+except IndexError:
+    print_error('数据列不存在')
+except ValueError:
+    print_error('数据内容不合法')
+
+mode_dict:dict = {
+    '单人姓名抽取':single_name_pick,
+    '多人姓名抽取':multiple_name_pick,
+    '单人编号抽取':single_number_pick,
+    '多人编号抽取':multiple_number_pick,
+    '单人性别选择姓名抽取' :single_gender_select_name_pick,
+    '多人性别选择姓名抽取' :multiple_gender_select_name_pick,
+    '单人性别选择编号抽取' :single_gender_select_number_pick,
+    '多人性别选择编号抽取' :multiple_gender_select_number_pick,
+    '单人权重姓名抽取' :single_weighted_name_pick,
+    '多人权重姓名抽取' :multiple_weighted_name_pick,
+    '单人权重编号抽取' :single_weighted_number_pick,
+    '多人权重编号抽取' :multiple_weighted_number_pick,
+    '单人权重性别选择姓名抽取' :single_weighted_gender_select_name_pick,
+    '多人权重性别选择姓名抽取' :multiple_weighted_gender_select_name_pick,
+    '单人权重性别选择编号抽取' :single_weighted_gender_select_number_pick,
+    '多人权重性别选择编号抽取' :multiple_weighted_gender_select_number_pick,
+    '单人动态权重姓名抽取' :single_dynamic_weighted_name_pick,
+    '多人动态权重姓名抽取' :multiple_dynamic_weighted_name_pick,
+    '单人动态权重编号抽取' :single_dynamic_weighted_number_pick,
+    '多人动态权重编号抽取' :multiple_dynamic_weighted_number_pick,
+    '单人动态权重性别选择姓名抽取' :single_dynamic_weighted_gender_select_name_pick,
+    '多人动态权重性别选择姓名抽取' :multiple_dynamic_weighted_gender_select_name_pick,
+    '单人动态权重性别选择编号抽取' :single_dynamic_weighted_gender_select_number_pick,
+    '多人动态权重性别选择编号抽取' :multiple_dynamic_weighted_gender_select_number_pick
+}
 
 #模式列表
-modelist = ['单人姓名抽取',
-            '多人姓名抽取',
-            '单人编号抽取',
-            '多编号抽取模式',
-            '单人性别选择姓名抽取'
-    ]
+mode_list = [
+    '单人姓名抽取',
+    '多人姓名抽取',
+    '单人编号抽取',
+    '多编号抽取模式',
+    '单人性别选择姓名抽取'
+]
 
 #定义主逻辑
 while True:
-    for i in range(len(modelist)):
-        print(f"{i+1}.{modelist[i]}模式")
+    for i in range(len(mode_list)):
+        print(f"{i+1}.{mode_list[i]}模式")
     #选择模式
     mode = input("请输入您选择的模式编号或输入\"about\"或输入\"exit\"退出运行:")
     #主逻辑
-    match mode:
-        case "1":
-            pass
-        case "about":
-            about()
-        case "exit":
-            exit()
-        case _:
+    if mode == "about":
+        about()
+    elif mode == "exit":
+        exit()
+    else:
+        if is_integer(mode) and mode_list[int(mode)] in list(mode_dict.keys()):
+            mode_dict[mode_list[int(mode) - 1]](people_data)
+        else:
             print_warning('未识别的模式编号')
             print('请重新选择模式')

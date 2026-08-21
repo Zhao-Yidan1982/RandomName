@@ -1,7 +1,7 @@
 {
   "IncludeNumber": true,
   "NumberColumn": 0,
-  "IncludeName": false,
+  "IncludeName": true,
   "NameColumn": 1,
   "IncludeSex": true,
   "SexColumn": 2,
