@@ -90,16 +90,16 @@ for i in mnls_main:
 #分离数据
 people_data:list = []
 try:
-    for people in tmp_list[settings["RowStart"]:settings["RowEnd"]]:
+    for people in tmp_list[settings["RowStart"]:settings["RowEnd"] + 1]:
         number:int|None = int(people[settings["NumberColumn"]]) if settings["IncludeNumber"] else None
         name:str|None = str(people[settings["NameColumn"]]) if settings["IncludeName"] else None
         sex:bool|None = None
         if settings["IncludeSex"]:
-            if "男" in people[settings["NameColumn"]] == "女" in people[settings["NameColumn"]]:
+            if ("男" in people[settings["SexColumn"]]) == ("女" in people[settings["SexColumn"]]):
                 print_error("性别数据不合法")
-            if "男" in people[settings["NameColumn"]]:
+            if "男" in people[settings["SexColumn"]]:
                 sex = True
-            else:
+            elif "女" in people[settings["SexColumn"]]:
                 sex = False
         weight:int|None = int(people[settings["WeightColumn"]]) if settings["IncludeWeight"] else None
 
@@ -142,7 +142,8 @@ mode_list = [
     '多人姓名抽取',
     '单人编号抽取',
     '多编号抽取模式',
-    '单人性别选择姓名抽取'
+    '单人性别选择姓名抽取',
+    '单人动态权重姓名抽取'
 ]
 
 #定义主逻辑
@@ -150,14 +151,14 @@ while True:
     for i in range(len(mode_list)):
         print(f"{i+1}.{mode_list[i]}模式")
     #选择模式
-    mode = input("请输入您选择的模式编号或输入\"about\"或输入\"exit\"退出运行:")
+    mode = input("请输入您选择的模式编号或输入\"about\"查看版本信息\"exit\"退出运行:")
     #主逻辑
     if mode == "about":
         about()
     elif mode == "exit":
         exit()
     else:
-        if is_integer(mode) and mode_list[int(mode)] in list(mode_dict.keys()):
+        if is_integer(mode) and mode_list[int(mode) - 1] in list(mode_dict.keys()):
             mode_dict[mode_list[int(mode) - 1]](people_data)
         else:
             print_warning('未识别的模式编号')

@@ -1,10 +1,13 @@
 import random
+import math
 
 #定义错误提示函数
 def print_warning(message):
     print(f"Warning:{message}!!\n")
+
 def print_error(message):
     print(f"Error:{message}!!!\n")
+    exit()
 
 #定义判断是否为整数的函数
 def is_integer(s):
@@ -26,10 +29,29 @@ class PeopleInfo:
         self.name = _name
         self.sex = _sex
         self.weight = _weight
+    def __str__(self)-> str:
+        if self.sex:
+            sex:str = '男'
+        else:
+            sex:str = '女' 
+        return f'number:{self.number} name:{self.name} sex:{sex} weight:{self.weight}'
+
+#定义数据缺失字符串
+no_name:str = '无姓名数据无法使用该模式'
+no_sex:str = '无性别数据无法使用该模式'
+no_number:str = '无编号数据无法使用该模式'
+no_weight:str = '无权重数据无法使用该模式'
 
 #定义1.单人姓名抽取函数
 def single_name_pick(all_info:list[PeopleInfo])-> None:
     #信息提取
+    no_data = False
+    if all_info[0].name is None:
+        print_warning(no_name)
+        no_data = True
+    if no_data:
+        return
+    
     name_list:list = []
     for info in all_info:
         name_list.append(info.name)
@@ -47,6 +69,13 @@ def single_name_pick(all_info:list[PeopleInfo])-> None:
 #定义2.多人姓名抽取函数
 def multiple_name_pick(all_info:list[PeopleInfo])-> None:
     #信息提取
+    no_data = False
+    if all_info[0].name is None:
+        print_warning(no_name)
+        no_data = True
+    if no_data:
+        return
+
     name_list:list = []
     for info in all_info:
         name_list.append(info.name)
@@ -85,6 +114,13 @@ def multiple_name_pick(all_info:list[PeopleInfo])-> None:
 #定义3.单人编号抽取函数
 def single_number_pick(all_info:list[PeopleInfo])-> None:
     #信息提取
+    no_data = False
+    if all_info[0].number is None:
+        print_warning(no_number)
+        no_data = True
+    if no_data:
+        return
+
     num_list:list = []
     for info in all_info:
         num_list.append(info.number)
@@ -103,6 +139,13 @@ def single_number_pick(all_info:list[PeopleInfo])-> None:
 #定义4.多编号抽取函数
 def multiple_number_pick(all_info:list[PeopleInfo])-> None:
     #信息提取
+    no_data = False
+    if all_info[0].number is None:
+        print_warning(no_number)
+        no_data = True
+    if no_data:
+        return
+    
     num_list:list = []
     for info in all_info:
         num_list.append(info.number)
@@ -141,11 +184,21 @@ def multiple_number_pick(all_info:list[PeopleInfo])-> None:
 #定义5.单人性别选择姓名抽取函数
 def single_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
     #信息提取
+    no_data = False
+    if all_info[0].name is None:
+        print_warning(no_name)
+        no_data = True
+    if all_info[0].sex is None:
+        print_warning(no_sex)
+        no_data = True
+    if no_data:
+        return
+
     male_name_list:list = []
     female_name_list:list = []
     for info in all_info:
         if info.sex:
-            male_name_list.append(info.number)
+            male_name_list.append(info.name)
         else:
             female_name_list.append(info.name)
         
@@ -173,41 +226,115 @@ def single_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
             print(random.choice(male_name_list + female_name_list))
             print()
 
-def multiple_gender_select_name_pick():
+#定义6.多人性别选择姓名抽取函数
+def multiple_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_gender_select_number_pick():
+
+#定义7.单人性别选择编号抽取函数
+def single_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_gender_select_number_pick():
+
+#定义8.多人性别选择编号抽取函数
+def multiple_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_weighted_name_pick():
+
+#定义9.单人权重姓名抽取函数
+def single_weighted_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_weighted_name_pick():
+    
+#定义10.多人权重姓名抽取函数
+def multiple_weighted_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_weighted_number_pick():
+
+#定义11.单人权重编号抽取函数
+def single_weighted_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_weighted_number_pick():
+
+#定义12.多人权重编号抽取函数
+def multiple_weighted_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_weighted_gender_select_name_pick():
+
+#定义13.单人权重性别选择姓名抽取函数
+def single_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_weighted_gender_select_name_pick():
+
+#定义14.多人权重性别选择姓名抽取函数
+def multiple_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_weighted_gender_select_number_pick():
+
+#定义15.单人权重性别选择编号抽取函数
+def single_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_weighted_gender_select_number_pick():
+
+#定义16.多人权重性别选择编号抽取函数
+def multiple_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_dynamic_weighted_name_pick():
+
+#定义17.单人动态权重姓名抽取函数
+def single_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
+    #信息提取
+    no_data:bool = False 
+    if all_info[0].name is None:
+        print_warning(no_name)
+        no_data = True
+    if all_info[0].weight is None:
+        print_warning(no_weight)
+        no_data = True
+    if no_data:
+        return
+    
+    name_list:list = []
+    weight_list:list = []
+    for info in all_info:
+        name_list.append(info.name)
+        weight_list.append(info.weight)
+    
+        #功能逻辑
+    while True:
+        _:bool = False
+        for i in weight_list:
+            if i <= 100:
+                _:bool = True
+        if _:
+            for i in range(len(all_info)):
+                weight_list[i] = 1000 * weight_list[i]
+
+        mode_input = input('请按回车键抽取姓名\n或输入"exit"退出运行,"quit"重新选择模式')
+        if mode_input == "exit":
+            exit()
+        elif mode_input == "quit":
+            break
+        else:
+            rand_val = random.choices(range(len(all_info)), weights=weight_list, k=1)[0]
+            print()
+            print(name_list[rand_val])
+            weight_list[rand_val] = int(math.sqrt(weight_list[rand_val]))
+            print()
+
+#定义18.多人动态权重姓名抽取函数
+def multiple_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_dynamic_weighted_name_pick():
+
+#定义19.单人动态权重编号抽取函数
+def single_dynamic_weighted_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_dynamic_weighted_number_pick():
+
+#定义20.多人动态权重编号抽取函数
+def multiple_dynamic_weighted_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_dynamic_weighted_number_pick():
+
+#定义21.单人动态权重性别选择姓名抽取函数
+def single_dynamic_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_dynamic_weighted_gender_select_name_pick():
+
+#定义22.多人动态权重性别选择姓名抽取函数
+def multiple_dynamic_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
     ...
-def multiple_dynamic_weighted_gender_select_name_pick():
+
+#定义23.单人动态权重性别选择编号抽取函数
+def single_dynamic_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
     ...
-def single_dynamic_weighted_gender_select_number_pick():
-    ...
-def multiple_dynamic_weighted_gender_select_number_pick():
+
+#定义24.多人动态权重性别选择编号抽取函数
+def multiple_dynamic_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
     ...
