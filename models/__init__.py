@@ -87,9 +87,7 @@ def multiple_name_pick(all_info:list[PeopleInfo])-> None:
             exit()
         elif mode_input == "quit":
             break
-        print()
-        print(random.choice(name_list))
-        print()
+
         num = 0
         if mode_input == "":
             num = 1
@@ -157,15 +155,13 @@ def multiple_number_pick(all_info:list[PeopleInfo])-> None:
             exit()
         elif mode_input == "quit":
             break
-        print()
-        print(random.choice(num_list))
-        print()
+
         num = 0
         if mode_input == "":
             num = 1
         else:
             try:
-                num = int(num)
+                num = int(mode_input)
             except ValueError:
                 print_warning('请输入整数')
                 continue
@@ -204,7 +200,7 @@ def single_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
         
     #功能逻辑
     while True:
-        sex_choice = input('默认为全部,a为仅男性,b为仅女性\n请选择抽取范围或\n输入"exit"退出运行,"quit"重新选择模式:')
+        sex_choice = input('输入"a"抽取男性,"b"抽取女性\n输入其他内容抽取全部，输入"exit"退出运行,"quit"重新选择模式:')
         print()
         if sex_choice == "exit":
             exit()
@@ -228,47 +224,47 @@ def single_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
 
 #定义6.多人性别选择姓名抽取函数
 def multiple_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义7.单人性别选择编号抽取函数
 def single_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义8.多人性别选择编号抽取函数
 def multiple_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义9.单人权重姓名抽取函数
 def single_weighted_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
     
 #定义10.多人权重姓名抽取函数
 def multiple_weighted_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义11.单人权重编号抽取函数
 def single_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义12.多人权重编号抽取函数
 def multiple_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义13.单人权重性别选择姓名抽取函数
 def single_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义14.多人权重性别选择姓名抽取函数
 def multiple_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义15.单人权重性别选择编号抽取函数
 def single_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义16.多人权重性别选择编号抽取函数
 def multiple_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义17.单人动态权重姓名抽取函数
 def single_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
@@ -288,6 +284,10 @@ def single_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
     for info in all_info:
         name_list.append(info.name)
         weight_list.append(info.weight)
+
+    if any(weight < 0 for weight in weight_list) or sum(weight_list) <= 0:
+        print_warning('权重必须为非负数且总和大于零')
+        return
     
         #功能逻辑
     while True:
@@ -313,28 +313,28 @@ def single_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
 
 #定义18.多人动态权重姓名抽取函数
 def multiple_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义19.单人动态权重编号抽取函数
 def single_dynamic_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义20.多人动态权重编号抽取函数
 def multiple_dynamic_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义21.单人动态权重性别选择姓名抽取函数
 def single_dynamic_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义22.多人动态权重性别选择姓名抽取函数
 def multiple_dynamic_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义23.单人动态权重性别选择编号抽取函数
 def single_dynamic_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')
 
 #定义24.多人动态权重性别选择编号抽取函数
 def multiple_dynamic_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    ...
+    print('敬请期待')

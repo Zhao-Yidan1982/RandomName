@@ -7,14 +7,14 @@ from models import *
 
 #版本信息
 VERSION_INFO = {
-    "version": "1.1.0",
-    "update_date": "2026-6-27",
+    "version": "1.2.0",
+    "update_date": "2026-8-22",
     "update_info": [
-        "【改进】优化了报错逻辑",
-        "【改进】重构了部分代码结构",
-        "【改进】修复了部分bug",
-        "【功能】添加了多数据库读取功能",
-        "【功能】添加了Linux源代码运行脚本"
+        "【修复】增加空数据库和行范围配置检查",
+        "【修复】增加动态权重的非负数和总和校验",
+        "【修复】修复配置文件JSON格式和缺少字段时的错误提示",
+        "【改进】完善未实现模式的敬请期待提示",
+        "【功能】添加macOS启动脚本"
         ],
     "other": "work in progress"
 }
@@ -43,6 +43,7 @@ for enc in encodings:
     try:
         with open(f"config/{filename}.json", "r", encoding="utf-8") as f:
             settings = json.load(f)
+            break
     except FileNotFoundError:
         print_error('配置文件不存在')
         input("请按回车键退出程序")
@@ -51,11 +52,30 @@ for enc in encodings:
         print_error('无读取配置文件权限不足')
         input("请检查文件权限并按回车键退出程序")
         exit()
+    except json.JSONDecodeError:
+        print_error('配置文件不是合法的JSON格式')
+        input("请检查配置文件格式并按回车键退出程序")
+        exit()
     except UnicodeDecodeError:
         if enc == encodings[-1]:  # 已经是最后一种编码
             print_error('不支持此编码的配置文件')
             input("请使用GBK或UTF-8\n并按回车键退出运行")
             exit()
+
+required_settings = [
+    "IncludeNumber", "NumberColumn", "IncludeName", "NameColumn",
+    "IncludeSex", "SexColumn", "IncludeWeight", "WeightColumn",
+    "RowStart", "RowEnd"
+]
+if not isinstance(settings, dict):
+    print_error('配置文件内容必须是JSON对象')
+    input("请检查配置文件格式并按回车键退出程序")
+    exit()
+missing_settings = [key for key in required_settings if key not in settings]
+if missing_settings:
+    print_error(f'配置文件缺少字段: {", ".join(missing_settings)}')
+    input("请补充配置字段并按回车键退出程序")
+    exit()
 
 #读取数据
 for enc in encodings:
@@ -80,12 +100,15 @@ for enc in encodings:
 
 #删除行末换行符
 for i in range(len(mnls_main)):
-    mnls_main[i] = mnls_main[i][:-1]
+    mnls_main[i] = mnls_main[i].rstrip('\r\n')
 
 #将数据初步分割
 tmp_list = []
 for i in mnls_main:
     tmp_list.append(i.split(','))
+
+if settings["RowStart"] > settings["RowEnd"]:
+    print_error('数据起始行不能大于结束行')
 
 #分离数据
 people_data:list = []
@@ -108,6 +131,9 @@ except IndexError:
     print_error('数据列不存在')
 except ValueError:
     print_error('数据内容不合法')
+
+if not people_data:
+    print_error('数据库中没有可读取的数据')
 
 mode_dict:dict = {
     '单人姓名抽取':single_name_pick,
@@ -141,7 +167,7 @@ mode_list = [
     '单人姓名抽取',
     '多人姓名抽取',
     '单人编号抽取',
-    '多编号抽取模式',
+    '多人编号抽取',
     '单人性别选择姓名抽取',
     '单人动态权重姓名抽取'
 ]
@@ -158,7 +184,9 @@ while True:
     elif mode == "exit":
         exit()
     else:
-        if is_integer(mode) and mode_list[int(mode) - 1] in list(mode_dict.keys()):
+        if (is_integer(mode)
+            and 1 <= int(mode) <= len(mode_list)
+            and mode_list[int(mode) - 1] in mode_dict):
             mode_dict[mode_list[int(mode) - 1]](people_data)
         else:
             print_warning('未识别的模式编号')
