@@ -224,47 +224,47 @@ def single_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
 
 #定义6.多人性别选择姓名抽取函数
 def multiple_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义7.单人性别选择编号抽取函数
 def single_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义8.多人性别选择编号抽取函数
 def multiple_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义9.单人权重姓名抽取函数
 def single_weighted_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
     
 #定义10.多人权重姓名抽取函数
 def multiple_weighted_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义11.单人权重编号抽取函数
 def single_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义12.多人权重编号抽取函数
 def multiple_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义13.单人权重性别选择姓名抽取函数
 def single_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义14.多人权重性别选择姓名抽取函数
 def multiple_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义15.单人权重性别选择编号抽取函数
 def single_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义16.多人权重性别选择编号抽取函数
 def multiple_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义17.单人动态权重姓名抽取函数
 def single_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
@@ -313,28 +313,28 @@ def single_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
 
 #定义18.多人动态权重姓名抽取函数
 def multiple_dynamic_weighted_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义19.单人动态权重编号抽取函数
 def single_dynamic_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义20.多人动态权重编号抽取函数
 def multiple_dynamic_weighted_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义21.单人动态权重性别选择姓名抽取函数
 def single_dynamic_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义22.多人动态权重性别选择姓名抽取函数
 def multiple_dynamic_weighted_gender_select_name_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义23.单人动态权重性别选择编号抽取函数
 def single_dynamic_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
 
 #定义24.多人动态权重性别选择编号抽取函数
 def multiple_dynamic_weighted_gender_select_number_pick(all_info:list[PeopleInfo])-> None:
-    print('敬请期待')
+    assert False, "模式未完成，敬请期待"
