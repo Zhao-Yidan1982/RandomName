@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 
 import json
+import sys
 
-#导入模块化模式函数
-from models import *
+from mode import *
+from mode.wrong import *
+from mode.personinfo import PersonInfo
 
 #版本信息
 VERSION_INFO = {
@@ -45,22 +47,14 @@ for enc in encodings:
             settings = json.load(f)
             break
     except FileNotFoundError:
-        print_error('配置文件不存在')
-        input("请按回车键退出程序")
-        exit()
+        print_error(printmessage='配置文件不存在',exit_num=file_not_found_exit)
     except PermissionError:
-        print_error('无读取配置文件权限不足')
-        input("请检查文件权限并按回车键退出程序")
-        exit()
+        print_error(printmessage='无读取配置文件权限不足',exit_num=permission_exit)
     except json.JSONDecodeError:
-        print_error('配置文件不是合法的JSON格式')
-        input("请检查配置文件格式并按回车键退出程序")
-        exit()
+        print_error(printmessage='配置文件不是合法的JSON格式',exit_num=json_decode_exit)
     except UnicodeDecodeError:
         if enc == encodings[-1]:  # 已经是最后一种编码
-            print_error('不支持此编码的配置文件')
-            input("请使用GBK或UTF-8\n并按回车键退出运行")
-            exit()
+            print_error('不支持此编码的配置文件',"请使用GBK或UTF-8\n并按回车键退出运行")
 
 required_settings = [
     "IncludeNumber", "NumberColumn", "IncludeName", "NameColumn",
@@ -68,14 +62,10 @@ required_settings = [
     "RowStart", "RowEnd"
 ]
 if not isinstance(settings, dict):
-    print_error('配置文件内容必须是JSON对象')
-    input("请检查配置文件格式并按回车键退出程序")
-    exit()
+    print_error('配置文件内容必须是JSON对象',"请检查配置文件格式并按回车键退出程序",json_decode_exit)
 missing_settings = [key for key in required_settings if key not in settings]
 if missing_settings:
-    print_error(f'配置文件缺少字段: {", ".join(missing_settings)}')
-    input("请补充配置字段并按回车键退出程序")
-    exit()
+    print_error(f'配置文件缺少字段: {", ".join(missing_settings)}', "请补充配置字段并按回车键退出程序",json_decode_exit)
 
 #读取数据
 for enc in encodings:
@@ -84,18 +74,12 @@ for enc in encodings:
             mnls_main = nmls.readlines()
         break  # 读取成功，跳出循环
     except FileNotFoundError:
-        print_error('数据库文件不存在')
-        input("请按回车键退出程序")
-        exit()
+        print_error('数据库文件不存在',"请按回车键退出程序",file_not_found_exit)
     except PermissionError:
-        print_error('无读取数据库文件权限不足')
-        input("请检查文件权限并按回车键退出程序")
-        exit()
+        print_error('无读取数据库文件权限不足',"请检查文件权限并按回车键退出程序",permission_exit)
     except UnicodeDecodeError:
         if enc == encodings[-1]:  # 已经是最后一种编码
-            print_error('不支持此编码的数据库文本')
-            input("请使用GBK或UTF-8\n并按回车键退出运行")
-            exit()
+            print_error('不支持此编码的数据库文本',"请使用GBK或UTF-8\n并按回车键退出运行",unicode_decode_exit)
 
 
 #删除行末换行符
@@ -126,11 +110,11 @@ try:
                 sex = False
         weight:int|None = int(people[settings["WeightColumn"]]) if settings["IncludeWeight"] else None
 
-        people_data.append(PeopleInfo(number, name, sex, weight))
+        people_data.append(PersonInfo(number, name, sex, weight))
 except IndexError:
-    print_error('数据列不存在')
+    print_error(printmessage='数据列不存在',exit_num=index_exit)
 except ValueError:
-    print_error('数据内容不合法')
+    print_error(printmessage='数据内容不合法',exit_num=value_exit)
 
 if not people_data:
     print_error('数据库中没有可读取的数据')
@@ -182,7 +166,7 @@ while True:
     if mode == "about":
         about()
     elif mode == "exit":
-        exit()
+        sys.exit(normal_exit)
     else:
         if (is_integer(mode)
             and 1 <= int(mode) <= len(mode_list)
@@ -191,3 +175,4 @@ while True:
         else:
             print_warning('未识别的模式编号')
             print('请重新选择模式')
+
